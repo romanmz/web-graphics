@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<title>SVG Basics</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<style>
+		body {
+			margin: 0;
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 16px;
+		}
+		svg {
+			float: left;
+			border: 1px solid #CCC;
+		}
+		img {
+			border: 1px solid #CCC;
+		}
+		div {
+			clear: both;
+			overflow: hidden;
+			padding: 20px 0;
+		}
+	</style>
+</head>
+<body>
+
+
+
+<!--
+
+REFERENCE:
+https://www.w3.org/TR/SVG11/
+https://www.w3.org/TR/2011/REC-SVG11-20110816/
+https://developer.mozilla.org/en-US/docs/Web/SVG
+
+INCLUDING AN SVG:
+As image:			<img src="image.svg">
+As CSS background:	url(image.svg)
+As object:			<object data="image.svg" type="image/svg+xml">				// Allows having fallback content, CSS and scripting
+With an iframe:		<iframe src="image.svg"></iframe>
+With an embed:		<embed type="image/svg+html" src="image.svg"></embed>
+Directly embedded:	<svg></svg>
+
+FILES - REGULAR SVG:
+File extension:	.svg
+Server headers:
+	Content-Type: image/svg+xml
+	Vary: Accept-Encoding
+
+FILES - GZIPPED SVG:
+File extension:	.svgz
+Server headers:
+	Content-Type: image/svg+xml
+	Content-Encoding: gzip
+	Vary: Accept-Encoding
+
+
+	SVG
+	==============================
+	<svg>
+		version
+		baseProfile
+		x y
+		width height
+		preserveAspectRatio		See <view>
+		zoomAndPan				See <view>
+		viewBox					See <view>
+		contentScriptType
+		contentStyleType
+-->
+
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+	<rect width="100%" height="100%" fill="red"></rect>
+	<circle cx="160" cy="100" r="80" fill="green"></circle>
+	<text x="160" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
+</svg>
+
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+
+	<!-- grid -->
+	<rect x="20" y="20" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="80" y="20" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="140" y="20" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="200" y="20" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="260" y="20" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+
+	<rect x="20" y="80" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="80" y="80" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="140" y="80" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="200" y="80" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="260" y="80" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+
+	<rect x="20" y="140" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="80" y="140" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="140" y="140" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="200" y="140" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	<rect x="260" y="140" width="40" height="40" fill="transparent" stroke="#CCC"  stroke-width="1"></rect>
+	
+	<!--
+		SHAPES AND PATHS
+		==============================
+		x, y 			position
+		width, height	size
+		rx, ry			radius size (border radius on <rect>s)
+		cx, cy			center position
+		r				radius
+		x1, y1			position of point 1
+		x2, y2			position of point 2
+		points			list of multiple points, each pair can be separated by a space, comma, end of line, or line feed character
+		d				path data:
+							M x y					Move to position
+							L x y					Draw line to position
+							H x						Draw horizontal line to position
+							V y						Draw vertical line to position
+							Z						Close path (case insensitive)
+							C x1 y1, x2 y2, x y		Cuadratic bezier curve
+							S x2 y2, x y			Cuadratic bezier curve shortcut, the first point is a reflection of the last point in the previous curve
+							Q x1 y1, x y			Quadratic bezier curve
+							T x y					Quadratic bezier curve shortcut, the control point is a reflection of the previous curve
+							A						Arcs. A curve is created based on two ellipses with intersecting points in both the initial and destination points
+								rx ry				radius in 'x' and 'y' for creating the ellipses
+								x-rotation			rotation of the ellipses in degrees
+								large-arc-flag		whether to take the long or short curve (1 for yes, 0 for no)
+								sweep-flag			wheter to take the curve that moves towards a positive number or not (0 for yes, 1 for no)
+								x y					destination point
+		pathLength		Modifies the final computation of a path by the specified ratio, or something? supposed to apply to text paths and motion paths
+	-->
+	<rect x="20" y="20" width="40" height="40"					fill="transparent" stroke="black"  stroke-width="5"></rect>
+	<rect x="80" y="20" width="40" height="40" rx="10" ry="10"	fill="transparent" stroke="black"  stroke-width="5"></rect>
+	<circle cx="160" cy="40" r="20" 							fill="transparent" stroke="red"    stroke-width="5"></circle>
+	<ellipse cx="220" cy="40" rx="10" ry="20"					fill="transparent" stroke="red"    stroke-width="5"></ellipse>
+	<line x1="20" y1="80" x2="60" y2="120"						fill="transparent" stroke="orange" stroke-width="5"></line>
+	<polyline points="80 80, 90 90, 80 100, 90 110, 80 120, 120 120, 110 110, 120 100, 110 90, 120 80"		fill="transparent" stroke="orange" stroke-width="5"></polyline>
+	<polygon points="140 80, 150 90, 140 100, 150 110, 140 120, 180 120, 170 110, 180 100, 170 90, 180 80"	fill="transparent" stroke="orange" stroke-width="5"></polygon>
+	<path d="M200,80 L240,120 m0,-20 l-40,20" fill="transparent" stroke="blue" stroke-width="5"></path>
+	<path d="M260,80 H300 V120 h-20 v-20 Z" fill="transparent" stroke="blue" stroke-width="5"></path>
+	<path d="M20,140 C20,160 60,140 60,160 S40,160 40,180 s-20,0 -20,-40" fill="transparent" stroke="blue" stroke-width="5"></path>
+	<path d="M80,140 Q120,140 120,180 T100,160 t-20,20" fill="transparent" stroke="blue" stroke-width="5"></path>
+	<path d="M140,140 A17,40 -45 0 0 180,160" fill="transparent" stroke="blue" stroke-width="5"></path>
+	<path d="M200,140 a17,40 -45 1 0 40,20" fill="transparent" stroke="blue" stroke-width="5"></path>
+	<path d="M260,140 a17,40 -45 0 1 40,20" fill="transparent" stroke="blue" stroke-width="5"></path>
+</svg>
+
+<!--
+
+	STYLES
+	==============================
+	There's three different ways to add styles to an <svg> element:
+		inline										Using attributes or a a single css style attribute
+		embedded <style> element					Needs to be included inside an <defs> element (if the svg is embedded, the styles will affect the rest of the page)
+		external .css file							syntax: <?xml-stylesheet type="text/css" href="style.css"?>
+	
+	Fills and strokes
+		fill and stroke:							Sets the color, you can use any CSS color value like #hex, named, rgb(), rgba(), hsl(), etc…
+		fill-opacity and stroke-opacity:			Sets the opacity separately from the colour
+		stroke-width, stroke-linecap, stroke-linejoin, stroke-miterlimit, stroke-dashoffset and fill-rule:
+													Same as in canvas
+		stroke-dasharray							Similar as in canvas, but it doesn't need to be an even number of values, and they need to be separated with commas
+	
+	Gradients and patterns
+		<linearGradient>							Must be defined within the <defs> element
+			id										An ID is required to be able to apply the gradient to shapes
+			x1 y1									Position of the starting point of the gradient. Defaults to 0 0
+			x2 y2									Position of the ending point of the gradient. Defaults to 1 0
+			xlink:href								You can use this attribute to copy the properties from an existing gradient
+			spreadMethod							Defines how the gradient will behave beyond it's defined ratio.
+				pad*								Extends the colour of the last stop. Default value
+				repeat								Starts the gradient all over again
+				reflect								Alternates the gradient in regular and reverse order
+			gradientUnits							Defines what type of units you need to use to define the position and size of gradients
+				objectBoundingBox*					Allows you to use units from 0 to 1, relative to the size of the element
+				userSpaceOnUse						Set this to define the values using units of any type, they will be relative to the containing <svg>
+			gradientTransform						Allows you to add extra transform settings to the gradient (see transforms section for the list of values)
+			<stop>									Defines a color stop
+				offset								Percentage matching the position that the stop represents. From 0 to 1, or 0% to 100%
+				stop-color							The colour to be added to the stop
+				stop-opacity						The opacity for the colour added to the stop
+				id or class							Optional, you can use them to define the stop-color and stop-opacity properties using CSS
+		<radialGradient>							Same as <linearGradient> except for:
+			cx cy									Defines the origin point of the gradient. Defaults to 0.5, 0.5
+			r										Radius size of the gradient. Defaults to 0.5
+			fx fy									Defines the focal point of the gradient. Defaults to the same point as origin
+		<pattern>									Also defined within the <defs> tag, unlike gradients which can only contain <stop> elements, patterns can include any shape
+			id										An ID is required to be able to apply the pattern to shapes
+			x y										Position of the origin point for adding the pattern. Defaults to 0 0
+			width, height							Size of the pattern. Defaults to 0 0 (invisible)
+			patternUnits							Units to be used for the pattern properties
+				objectBoundingBox*
+				userSpaceOnUse
+			patternContentUnits						Units to be used for the paths inside the pattern
+				objectBoundingBox
+				userSpaceOnUse*
+			patternTransform						Allows you to add extra transform settings to the pattern (see transforms section for the list of values)
+			viewBox									See <view> element
+			preserveAspectRatio						See <view> element
+
+-->
+<svg id="svg-styles" version="1.1" xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+	<defs>
+		<linearGradient id="gradient3" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="red"></stop>
+			<stop offset="50%" stop-color="orange" stop-opacity="0.5"></stop>
+			<stop offset="100%" stop-color="blue"></stop>
+		</linearGradient>
+		<linearGradient id="gradient4">
+			<stop offset="0%" class="stop1"></stop>
+			<stop offset="50%" class="stop2"></stop>
+			<stop offset="100%" class="stop3"></stop>
+		</linearGradient>
+		<linearGradient id="gradient5" xlink:href="#gradient4" y2="1"  gradientTransform="scale(0.5)">
+		</linearGradient>
+		<radialGradient id="radialGradient1">
+			<stop offset="0%" stop-color="red"></stop>
+			<stop offset="100%" stop-color="orange"></stop>
+		</radialGradient>
+		<radialGradient id="radialGradient2" cx="0.25" cy="0.75" r="0.4" spreadMethod="repeat" xlink:href="#radialGradient1">
+		</radialGradient>
+		<radialGradient id="radialGradient3" fx="0.25" fy="0.25" xlink:href="#radialGradient1">
+		</radialGradient>
+		<radialGradient id="radialGradient4" cx="6em" cy="10em" r="10px" gradientUnits="userSpaceOnUse" xlink:href="#radialGradient1">
+		</radialGradient>
+		<pattern id="pattern1" width=".5" height=".5">
+			<rect x="0" y="0" width="100%" height="100%" fill="skyblue"></rect>
+			<rect x="0" y="0" width="10" height="10" fill="url(#gradient2)"></rect>
+			<circle cx="10" cy="10" r="8" fill="url(#gradient1)" fill-opacity="0.5"></circle>
+		</pattern>
+		<pattern id="pattern2" width=".5" height=".5" patternContentUnits="objectBoundingBox">
+				<rect x="0" y="0" width=".5" height=".5" fill="skyblue"></rect>
+				<rect x="0" y="0" width=".25" height=".25" fill="url(#gradient2)"></rect>
+				<circle cx=".25" cy=".25" r=".2" fill="url(#gradient1)" fill-opacity="0.5"></circle>
+		</pattern>
+		<pattern id="pattern3" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="skewX(-10)">
+				<rect x="0" y="0" width="20" height="20" fill="skyblue"></rect>
+				<rect x="0" y="0" width="10" height="10" fill="url(#gradient2)"></rect>
+				<circle cx="10" cy="10" r="8" fill="url(#gradient1)" fill-opacity="0.5"></circle>
+		</pattern>
+		<style>
+			#svg-styles .square1 {
+				fill: purple;
+				stroke: black;
+				fill-opacity: .5;
+				stroke-opacity: 0.25;
+				stroke-width: 3;
+			}
+			#svg-styles .square2 {
+				stroke-linecap: round;	/* butt | round | square */
+				stroke-linejoin: miter;	/* miter | bevel | round */
+				stroke-miterlimit: 2;
+			}
+			#svg-styles .square3 {
+				stroke-dasharray: 2,2,10,2;
+				stroke-dashoffset: 1;
+			}
+			#svg-styles .square4 {
+				fill-rule: evenodd; /* nonzero | evenodd */
+			}
+			#gradient2 .stop1 {
+				stop-color: orange;
+			}
+			#gradient2 .stop2 {
+				stop-color: green;
+			}
+			#gradient2 .stop3 {
+				stop-color: purple;
+				stop-opacity: 0.2;
+			}
+		</style>
+
+	</defs>
+	<rect x="20" y="20" width="40" height="40" class="square1"></rect>
+	<polyline points="80 20, 90 30, 80 40, 90 50, 80 60, 120 60, 110 50, 120 40, 110 30, 120 20" fill="none" stroke="#069" stroke-width="6" class="square2"></polyline>
+	<rect x="140" y="20" width="40" height="40" fill="none" stroke="#900" stroke-width="2" class="square3"></rect>
+	<path d="M200,20 h40 v40 h-40 v-30 h30 v20" fill="orange" class="square4"></path>
+	<rect x="20" y="80" width="40" height="40" fill="url(#gradient3)"></rect>
+	<rect x="80" y="80" width="40" height="40" fill="url(#gradient4)"></rect>
+	<rect x="140" y="80" width="40" height="40" fill="url(#gradient5)"></rect>
+	<rect x="200" y="80" width="40" height="40" fill="url(#radialGradient1)"></rect>
+	<rect x="260" y="80" width="40" height="40" fill="url(#radialGradient2)"></rect>
+	<rect x="20" y="140" width="40" height="40" fill="url(#radialGradient3)"></rect>
+	<rect x="80" y="140" width="40" height="40" fill="url(#radialGradient4)"></rect>
+	<rect x="140" y="140" width="50" height="50" fill="url(#pattern1)"></rect>
+	<rect x="200" y="140" width="50" height="50" fill="url(#pattern2)"></rect>
+	<rect x="260" y="140" width="50" height="50" fill="url(#pattern3)"></rect>
+</svg>
+
+
+
+<!--
+
+	TEXT
+	==============================
+	<text>
+		x y				Position of the text block. Defaults to 0 0
+		dx dy			Shifts the text relative to its current position.
+		rotate			Rotate characters by a given amount of degrees. If you pass multiple numbers they will be applied to single letters in the same order
+		textLength		Set a target text width to get the browser to try to match.
+		lengthAdjust	If using 'textLength', this instructs the browser whether to stretch only the spacing characters, or all characters
+			spacing*
+			spacingAndGlyphs
+		text-anchor: start* | middle | end
+		font-*
+		
+	<tspan>
+		x y				Sets a new position for the text inside the span
+		dx dy			See <text>
+		rotate			See <text>
+		textLength		See <text>
+		lengthAdjust	See <text>
+	
+	<tref>				*** DEPRECATED
+		xlink:href		Copy an existing text with its properties ???
+	
+	<textPath>			Makes the contained text follow a path
+		xlink:href		Links the path to be used as baseline
+		startOffset		Offset the start of the text within the path. Defaults to 0
+		method			(doesn't seem to be supported on browsers)
+			align*		Adjust the characters proportionally so they are not distorted
+			stretch		Allow characters to be distorted
+		spacing			(doesn't seem to be supported on browsers)
+			auto		Adjust the spacing between characters for better looking results
+			exact*		Leave default spacing
+	
+-->
+<svg id="svg-text" version="1.1" xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+	<defs>
+		<style>
+			#text1 {
+				font-family: Helvetica, Arial, sans-serif;
+				font-style: italic;
+				font-weight: 900;
+				font-variant: small-caps;
+				font-stretch: expanded;
+				font-size: 40px;
+				font-size-adjust: 5px;
+				font-kerning: 1px; /* 'kerning' in svg */
+				letter-spacing: .05em;
+				word-spacing: 1em;
+				text-decoration: underline;
+				text-anchor: middle;
+				fill: green;
+				stroke: black;
+			}
+			#text1 tspan {}
+			#text2 {}
+			
+		</style>
+	</defs>
+	<text id="text1" x="50%" y="50%" kerning="2" textLength="200" lengthAdjust="spacingAndGlyphs">Hello <tspan dx="-5" dy="-5" rotate="10 15 20 25 30 35 40 45">World</tspan>!</text>
+	<text id="text2">
+		<tref xlink:href="#text1"></tref>
+	</text>
+
+	<path id="textPath1" d="M50,150 c40,-100 160,100 220,0" fill="transparent" stroke="red"></path>
+	<text id="text3">
+		<textPath xlink:href="#textPath1" startOffset="10" method="align" spacing="auto">This text follows a curve</textPath>
+	</text>
+</svg>
+
+
+<!--
+	
+	TRANSFORMATIONS
+	==============================
+	<g>							Groups paths and applies common attributes
+	transform:
+		translate(x, y)			Moves the path along the x and y axis
+		rotate(degrees, x, y)	Rotates the path, the transform origin point defaults to the origin of the svg, but you can pass a custom origin point
+		scale(x, y)				Scales the path, if you only pass one value the path will be scaled in the same proportion on both dimensions
+		skewX(degrees)			Skews the path horizontally
+		skeyY(degrees)			Skews the path vertically
+		matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
+
+-->
+<svg id="svg-transform" version="1.1" xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+	<g fill="red" transform="translate(20, 20)">
+        <rect x="0" y="0" width="10" height="10" transform="rotate(45) scale(1.5)"></rect>
+		<rect x="20" y="0" width="10" height="10" transform="rotate(45)"></rect>
+		<rect x="40" y="0" width="10" height="10" transform="skewX(10)"></rect>
+		<rect x="60" y="0" width="10" height="10" transform="skewY(10)"></rect>
+		<rect x="80" y="0" width="10" height="10" transform="matrix(1.2, .2, .2, .8, 10, 10)"></rect>
+    </g>
+</svg>
+
+
+<!--
+	
+	CLIPPING, MASKING, EMBEDDING
+	==============================
+	<clipPath>				Contains other shapes, which together create a shape to be used for clipping others. Goes inside the <defs> element
+		id					Required to be able to apply the clipping path to other shapes
+		clipPathUnits
+			userSpaceOnUse*		Absolute units (relative to the containing svg)
+			objectBoundingBox	Units relative to the object it is being applied on
+		<>
+			clip-rule		Applies to elements within the clipPath, determines how to handle ambiguous paths
+				nonzero*
+				evenodd
+	clip-path: url(#)		A shape with this attribute will be clipped using the clippingPath passed as an url attribute
+	
+	<mask>					Similar to a clipping path, but takes into account variations in opacity
+		x y
+		width height
+		maskUnits
+			userSpaceOnUse
+			objectBoundingBox*
+		maskContentUnits
+			userSpaceOnUse*
+			objectBoundingBox
+	mask: url(#)			A shape with this attribute will be masked using the provided mask element
+	
+	opacity					This attribute simply sets the opacity for the whole path, equivalent to the CSS property
+	
+	<image>					Embed raster images or other svg's using this element, you can apply any svg feature to them like masking and transforms
+		xlink:href			Load the image from this url
+		x y					Position
+		width height		Size
+		color-profile: auto* | sRGB | 'name matching an <color-profile> element' | url() | inherit
+		preserveAspectRatio	See <view> element for a description of this
+	
+	<foreignObject>			Embed other types of random xml content within this element
+
+-->
+<svg id="svg-masking" version="1.1" xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+	<defs>
+		<linearGradient id="gradient-fade">
+			<stop offset="0" stop-color="white" stop-opacity="1"></stop>
+			<stop offset=".5" stop-color="white" stop-opacity="0"></stop>
+		</linearGradient>
+		<clipPath id="cut-off-bottom">
+			<rect x="0" y="0" width="50%" height="50%"></rect>
+		</clipPath>
+		<mask id="fade-out-bottom">
+			<rect x="50%" y="50%" width="50%" height="50%" fill="url(#gradient-fade)" ></rect>
+		</mask>
+	</defs>
+
+	<circle cx="160" cy="100" r="80" clip-path="url(#cut-off-bottom)"></circle>
+	<circle cx="160" cy="100" r="80" mask="url(#fade-out-bottom)"></circle>
+	<image xlink:href="mdn-logo.png" x="160" y="100" width="64" height="73" transform="rotate(45 160 100)" mask="url(#fade-out-bottom)"></image>
+</svg>
+
+
+<!--
+	
+	REUSABLE ELEMENTS
+	==============================
+	<use>					Copies an existing element, then you can apply your own transforms to it
+		xlink:href
+		x y
+		width height
+		
+
+-->
+<svg id="svg-reuse" version="1.1" xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+	<defs>
+		<g id="item">
+			<polygon points="0 30 5 38 10 30"></polygon>
+			<polygon points="0 46 5 38 10 46"></polygon>
+		</g>
+		<g id="quadrant">
+			<use xlink:href="#item"></use>
+			<use xlink:href="#item" transform="rotate(18)"></use>
+			<use xlink:href="#item" transform="rotate(36)"></use>
+			<use xlink:href="#item" transform="rotate(54)"></use>
+			<use xlink:href="#item" transform="rotate(72)"></use>
+		</g>
+		<g id="full-circle">
+			<use xlink:href="#quadrant"></use>
+			<use xlink:href="#quadrant" transform="rotate(90)"></use>
+			<use xlink:href="#quadrant" transform="rotate(180)"></use>
+			<use xlink:href="#quadrant" transform="rotate(270)"></use>
+		</g>
+		<style>
+			#outer-circle {
+				fill: purple;
+			}
+			#inner-circle {
+				fill: blue;
+			}
+		</style>
+	</defs>
+
+	<g transform="translate(160, 100)">
+		<use id="outer-circle" xlink:href="#full-circle" transform="scale(2)"></use>
+		<use id="inner-circle" xlink:href="#full-circle"></use>
+	</g>
+</svg>
+
+
+
+<!--
+
+	OTHER ELEMENTS
+	==============================
+
+	DESCRIPTIVE ELEMENTS
+	<title>				Title of the svg, generally shown as tooltip
+	<desc>				Description of the content, useful for accessibility
+	<metadata>			Contains metadata from other XML namespaces, like RDF or FOAF
+	<color-profile>		Describes the color profile used for an image
+		local
+		name
+		rendering-intent: auto* | perceptual | relative-colorimetric | saturation | absolute-colorimetric
+	
+	HTML ELEMENTS
+	<script>
+	<style>
+	<audio>
+	<canvas>
+	<iframe>
+	<video>
+	
+	CONTAINERS
+	<a>								Similar to HTML, you can use CSS @namespaces to avoid selecting one or the other accidentally
+		xlink:actuate				???
+		xlink:arcrole				???
+		xlink:href
+		xlink:role
+		xlink:show
+		xlink:title
+		xlink:type
+		
+		xml:base
+		xml:lang
+		xml:space
+		
+	<marker>						Defines the graphics to be used for arrowheads and polymarkers
+		refX refY					Relative position of the marker relative to the point where it's being addded
+		markerUnits
+			strokeWidth*			Use unitless numbers which will be relative to the stroke width of the path
+			userSpaceOnUse			Use absolute units
+		markerWidth markerHeight	Size of the marker
+		orient
+			auto					Rotate the marker automatically to match the direction of the path					
+			degrees					Set a defined rotation
+		viewBox						See <view>
+		preserveAspectRatio			See <view>
+	marker-start: url()
+	marker-mid: url()
+	marker-end: url()
+	marker: url()
+	
+	<switch>						Shows or hides contained elements based on their conditional attributes
+									when using a switch, only the first element to match the requirements will be displayed, and the rest will be ignored
+		requiredFeatures
+		requiredExtensions
+		systemLanguage
+	<symbol>						Container for reusable elements, they are never rendered directly, they need to be called elsewhere with the <use> element
+		viewBox
+		preserveAspectRatio
+	
+	VIEW ELEMENT AND ATTRIBUTES
+	<view>						Doesn't seem to actually be supported?
+		viewBox: x y w h		Defines what section of the scene will be displayed. Applies to <svg> <symbol> <image> <foreignObject> <marker> <pattern> and <view> elements
+		preserveAspectRatio:	Applies to same elements as viewBox
+			defer				Applies only to <image> elements, if present it will use the aspect ratio settings of the source image
+			align				Defines whether or not to use uniform scaling to fit the content within the viewport, and how it will be aligned if smaller
+				none
+				xMinYMin
+				xMidYMin
+				xMaxYMin
+				xMinYMid
+				xMidYMid*
+				xMaxYMid
+				xMinYMax
+				xMidYMax
+				xMaxYMax
+			meetOrSlice			If using uniform scaling, defines how the content will fit in the container
+				meet			fits all content within the viewport, possibly leaving empty space
+				slice			fills the entire viewport, possible cropping content
+		zoomAndPan:				disable | magnify*
+		viewTarget				???
+
+-->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 300 200" width="300" height="200">
+	<defs>
+		<style>
+			@namespace url(http://www.w3.org/1999/xhtml);
+			@namespace svg url(http://www.w3.org/2000/svg);
+			a {
+				color: green;
+			}
+			svg|a {
+				fill: cyan;
+			}
+			*|a:hover {
+				opacity: .5;
+			}
+		</style>
+
+		<marker id="marker1" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+			<path d="M 0 0 L 10 5 L 0 10 z"></path>
+		</marker>
+		<marker id="marker2" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="0">
+			<path d="M 0 0 L 10 5 L 0 10 z"></path>
+		</marker>
+	</defs>
+
+
+	<a href="#">
+		<text x="10" y="20">SVG &lt;a&gt; element</text>
+	</a>
+	<polyline points="20,20 40,50 30,80" fill="none" stroke="black" stroke-width="2" marker-start="url(#marker1)" marker-mid="url(#marker1)" marker-end="url(#marker1)" ></polyline>
+	<polyline points="40,20 60,50 50,80" fill="none" stroke="black" stroke-width="2" marker-end="url(#marker2)" ></polyline>
+	<switch>
+		<text x="0" y="50" systemLanguage="ar">مرحبا</text>
+		<text x="0" y="50" systemLanguage="de,nl">Hallo!</text>
+		<text x="0" y="50" systemLanguage="en">Hello!</text>
+		<text x="0" y="50" systemLanguage="en-us">Howdy!</text>
+		<text x="0" y="50" systemLanguage="en-gb">Wotcha!</text>
+		<text x="0" y="50" systemLanguage="en-au">G'day!</text>
+		<text x="0" y="50" systemLanguage="es">Hola!</text>
+		<text x="0" y="50" systemLanguage="fr">Bonjour!</text>
+		<text x="0" y="50" systemLanguage="ja">こんにちは</text>
+		<text x="0" y="50">☺</text>
+	</switch>
+</svg>
+
+
+<div>
+	<a href="#">HTML &lt;a&gt; element</a>
+	<img src="test.svg" width="120" height="120">
+	<img src="test.svg#halfSize" width="120" height="120">
+	<img src="test.svg#doubleSize" width="120" height="120">
+	<img src="test.svg#distort" width="120" height="120">
+	<img src="test.svg#zoom" width="120" height="120">
+</div>
+
+
+
+<!--
+	
+	FILTERS BASICS
+	==============================
+	
+	FILTER
+	***************
+	<filter>					Filter container, includes other elements that define the effects to be applied to the object (named filter primitives)
+		id						Required to allow elements to reference the filter
+		x y						Origin point of the 'filter effects region' (content outside the region is cropped out). Defaults to -10%
+		width height			Size of the effects region. Defaults to 120%
+		filterUnits				Defines how the units used to define the effects region will behave
+			objectBoundingBox*	Makes units relative to the objects where the filter is being applied on (0–1 or 0%–100%)
+			userSpaceOnUse		Makes units absolute (relative to the svg container)
+		primitiveUnits			Similar to 'filterUnits' but applies to the units used to define the 'subregions' of each filter primitives contained within the filter
+			objectBoundingBox
+			userSpaceOnUse*
+		xlink:href				Pass the url of another filter to copy its properties. (doesn't seem to be working)
+		filterRes				(deprecated)
+	
+	filter: url(#filtername)	Attribute to apply a given filter to an object or group of objects
+	
+	FILTER PRIMITIVES BASICS
+	***************
+	Common attributes:
+		x y						Defines the 'subregion' of the effect. Works the same as the reigon attributes for <filter>s
+		width height
+								* Subregions don't seem to work properly on IE and Edge, only main regions
+								
+		result					Gives each individual effect a name, which can be used by other primitives to take the resulting image from that filter and add their own effects to it
+		in						Short for 'input', defines what graphic to use as a base to apply the effects of the primitive
+								The default value for the first primitive within a <filter> is 'SourceGraphic'
+								The default value for any subsequent primitives is the result of the previous primitive (so effects are added sequentially on top of the previous ones)
+			SourceGraphic		Applies the effect to the entire graphic
+			SourceAlpha			Applies the effect to the entire graphic, but only using its alpha channel
+								
+			FillPaint			Applies the effect only to the fill data
+			StrokePaint			Applies the effect only to the stroke data
+								* Opera and Chrome fail and use 'SourceGraphic' instead
+								* Safari fails and makes the whole element disappear
+								* Firefox fails and explodes
+								* IE and Edge expand the selected data (fill or stroke) to cover the entire area covered by both instead of individually, and ignores the alpha channel
+								
+			BackgroundImage		Applies the effect to the accumulated 'background' graphics
+			BackgroundAlpha		Applies the effect to the accumulated 'background' graphics, but only using the alpha channel
+								* Opera and Chrome fail and use 'SourceGraphic' instead
+								* Safari and Firefox fail and do nothing
+								* IE and Edge actually work as intended
+								+++ See the "Working with backgrounds" section for more details
+								
+			"resultname"		Apply the effect to the resulting graphic from another primitive. The closest (previous) primitive with a matching 'result' attribute will be used
+	
+	WORKING WITH BACKGROUNDS
+	***************
+	The 'BackgroundImage' and 'BackgroundAlpha' input settings apply effects to the accumulated 'background' graphics of the current context
+	An accumulated 'background' is built this way:
+	- You need a 'container' element (<a> <defs> <g> <marker> <mask> <pattern> <svg> <switch> <symbol>)
+	- Add an 'enable-background' attribute with a value of 'new' to it
+	- The child elements included in this container will be added one by one to this 'background' context
+	- If you call a filter that applies effects to this background context, only the elements added up to that point will be affected, any graphics that come later will be left untouched
+	- The element that you use to call the backgroud filter will actually disappear as it's taken to be included on the filter, but since it's not included in the background
+	- You can also just add an empty container element like <g> and call the background filter on it
+	- If you need to mix source graphics and background images on the same filter, see the following section 'Merging multiple contexts'
+	
+	enable-background:			Indicates whether or not the child elements need to be cached and made available to be used by filter primitives, applies only to 'container' elements
+		accumulate*				Default value, does not cache elements (if there is another ancestor with a value of 'new', then the graphics are still added to that context)
+		new <x y width height>	Enables background image. Optionally, you can pass region dimensions to specify which segment of the background image will be used
+								* IE and Edge crash if you specify any region dimensions, so just use 'new' if you need
+								* IE and Edge also crash if you call a background filter when there's no ancestor with 'enable-background' set to 'new'
+	
+	MERGING MULTIPLE CONTEXTS
+	***************
+	By default you can only use a single 'context' on each filter, if you have multiple primitives that reference different types of input then only the context of the last primitive will be used
+	For example if a filter has two primitives, the first one using SourceGraphic and the second using BackgroundAlpha, then only the effects applied to BackkgroundAlpha will be used
+	If you need to mix different contexts on the same filter, then you'll need to use a <feMerge> element
+	
+	<feMerge>					Can only contain one or multiple <feMergeNode>s
+		<feMergeNode>			Each merge node element takes a 'result' graphic from a filter primitive and stacks it into the final resulting image
+			in					References the 'result' name of a primitive. Each result down the list is added on top of the previous ones
+	
+-->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="500" height="200" viewBox="0 0 500 200">
+	<defs>
+		<linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#069" stop-opacity="1"></stop>
+			<stop offset="1" stop-color="#069" stop-opacity="0"></stop>
+		</linearGradient>
+		
+		<filter id="offset" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+			<feOffset in="SourceGraphic" dx="0" dy="60"></feOffset>
+		</filter>
+		<filter id="offsetAlpha" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+			<feOffset in="SourceAlpha" dx="0" dy="60"></feOffset>
+		</filter>
+		<filter id="offsetFill" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+			<feOffset in="FillPaint" dx="0" dy="60"></feOffset>
+		</filter>
+		<filter id="offsetStroke" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+			<feOffset in="StrokePaint" dx="0" dy="60"></feOffset>
+		</filter>
+		<filter id="offsetBG" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+			<feOffset in="BackgroundImage" dx="0" dy="60"></feOffset>
+		</filter>
+		<filter id="offsetBGAlpha" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+			<feOffset in="BackgroundAlpha" dx="0" dy="60"></feOffset>
+		</filter>
+		<filter id="offsetBGandBlurGraphic" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+			<feOffset in="BackgroundAlpha" dx="0" dy="60" result="offset"></feOffset>
+			<feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"></feGaussianBlur>
+			<feMerge>
+				<feMergeNode in="offset"></feMergeNode>
+				<feMergeNode in="blur"></feMergeNode>
+			</feMerge>
+		</filter>
+	</defs>
+	
+	<rect x="20" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5"></rect>
+	<rect x="80" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5" filter="url(#offset)"></rect>
+	<rect x="140" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5" filter="url(#offsetAlpha)"></rect>
+	<rect x="200" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5" filter="url(#offsetFill)"></rect>
+	<rect x="260" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5" filter="url(#offsetStroke)"></rect>
+	<g enable-background="new">
+		<rect x="320" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5"></rect>
+		<g filter="url(#offsetBG)"></g>
+	</g>
+	<g enable-background="new">
+		<rect x="380" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5"></rect>
+		<g filter="url(#offsetBGAlpha)"></g>
+	</g>
+	<g enable-background="new">
+		<rect x="440" y="20" width="40" height="40" fill="url(#gradient)" stroke="red" stroke-width="5"></rect>
+		<g filter="url(#offsetBGandBlurGraphic)">
+			<circle cx="460" cy="40" r="20" fill="yellow"></circle>
+		</g>
+	</g>
+</svg>
+
+
+
+<!--
+	
+	FILTERS PRIMITIVES
+	==============================
+	* nevermind, browser support seems to be very inconsistent, use css filters or canvas instead
+	
+-->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 300 200" width="300" height="200">
+	<defs>
+		<linearGradient id="gradient2" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="purple" stop-opacity="1"></stop>
+			<stop offset="1" stop-color="yellow" stop-opacity="1"></stop>
+		</linearGradient>
+		
+		<filter id="colorMatrix">
+			<!--
+			Apply v In >	R	G	B	A	K
+			R
+			G
+			B
+			A
+			
+			This example replaces yellow (1r + 1g) with green (0r +1g)
+			-->
+			<feColorMatrix type="matrix" values="
+					0 0 0 0 0
+					0 1 0 0 0
+					0 0 1 0 0
+					0 0 0 1 0">
+			</feColorMatrix>
+		</filter>
+		<filter id="colorMatrixSaturate">
+			<feColorMatrix type="saturate" values="0"></feColorMatrix>
+		</filter>
+		<filter id="colorMatrixHue">
+			<feColorMatrix type="hueRotate" values="180"></feColorMatrix>
+		</filter>
+		<filter id="colorMatrixLuminance">
+			<feColorMatrix type="luminanceToAlpha"></feColorMatrix>
+		</filter>
+		
+		<filter id="componentIdentity">
+			<feComponentTransfer>
+				<feFuncR type="identity"></feFuncR>
+				<feFuncG type="identity"></feFuncG>
+				<feFuncB type="identity"></feFuncB>
+				<feFuncA type="identity"></feFuncA>
+			</feComponentTransfer>
+		</filter>
+		<filter id="componentTable">
+			<feComponentTransfer>
+				<feFuncR type="table" tableValues="1 1 0 1 1"></feFuncR>
+			</feComponentTransfer>
+		</filter>
+		<filter id="componentDiscrete">
+			<feComponentTransfer>
+				<feFuncR type="discrete" tableValues="1 1 0 1 1"></feFuncR>
+			</feComponentTransfer>
+		</filter>
+		<filter id="componentLinear">
+			<feComponentTransfer>
+				<feFuncR type="linear" slope="0.2" intercept="0"></feFuncR>
+			</feComponentTransfer>
+		</filter>
+		<filter id="componentGamma">
+			<feComponentTransfer>
+				<feFuncR type="gamma" amplitude="2" exponent="5" offset="0"></feFuncR>
+			</feComponentTransfer>
+		</filter>
+	</defs>
+	
+	<circle cx="30" cy="30" r="20" fill="url(#gradient2)"></circle>
+	<circle cx="80" cy="30" r="20" fill="url(#gradient2)" filter="url(#colorMatrix)"></circle>
+	<circle cx="130" cy="30" r="20" fill="url(#gradient2)" filter="url(#colorMatrixSaturate)"></circle>
+	<circle cx="180" cy="30" r="20" fill="url(#gradient2)" filter="url(#colorMatrixHue)"></circle>
+	<circle cx="230" cy="30" r="20" fill="url(#gradient2)" filter="url(#colorMatrixLuminance)"></circle>
+	
+	<g transform="translate(0, 60)">
+		<circle cx="30" cy="30" r="20" fill="url(#gradient2)" filter="url(#componentIdentity)"></circle>
+		<circle cx="80" cy="30" r="20" fill="url(#gradient2)" filter="url(#componentTable)"></circle>
+		<circle cx="130" cy="30" r="20" fill="url(#gradient2)" filter="url(#componentDiscrete)"></circle>
+		<circle cx="180" cy="30" r="20" fill="url(#gradient2)" filter="url(#componentLinear)"></circle>
+		<circle cx="230" cy="30" r="20" fill="url(#gradient2)" filter="url(#componentGamma)"></circle>
+	</g>
+</svg>
+
+
+
+<!--	
+	
+	FUTURE ELEMENTS?
+	==============================
+	Mesh Gradients
+		<meshgradient>
+		<mesh>
+		<meshpatch>
+		<meshrow>
+	Hatch Paths
+		<hatchpath>
+		<hatch>
+	Solid Colours
+		<solidcolor>
+	
+	
+	DEPRECATED ELEMENTS
+	==============================
+	Animation
+		<animate>
+		<animateColor>
+		<animateMotion>
+		<animateTransform>
+		<discard>
+		<mpath>
+		<set>
+	Fonts and Glyphs
+		<font>
+		<font-face>
+		<font-face-format>
+		<font-face-name>
+		<font-face-src>
+		<font-face-uri>
+		<hkern>
+		<vkern>
+		<glyph>
+		<glyphRef>
+		<altGlyph>
+		<altGlyphDef>
+		<altGlyphItem>
+		<missing-glyph>
+	Others
+		<cursor>
+	
+-->
+
+
+
+</body>
+</html>

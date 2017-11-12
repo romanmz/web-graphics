@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Canvas Basics</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<style>
+		body {
+			font-size: 16px;
+			font-family: Helvetica, Arial, sans-serif;
+			margin: 0;
+			background: #EEE;
+		}
+		#canvas {
+			display: block;
+			height: 800px;
+			width: 800px;
+			margin: 20px auto;
+			background: white;
+		}
+		a {
+			display: block;
+			color: #069;
+			width: 800px;
+			margin: 20px auto;
+		}
+	</style>
+</head>
+<body>
+
+<canvas id="canvas">
+	Fallback content
+</canvas>
+<a id="downloadButton" href="#">Download image</a>
+
+<script>
+/*
+
+==============================
+REFERENCE:
+https://www.w3.org/TR/2dcontext/
+https://www.w3.org/TR/2015/REC-2dcontext-20151119/
+https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/
+==============================
+
+
+// USAGE BASICS
+// ------------------------------
+*/
+var canvas = document.getElementById('canvas');
+if(typeof canvas.getContext == 'function') {
+	
+	// Update size to match CSS
+	canvas.width = canvas.offsetWidth;
+	canvas.height = canvas.offsetHeight;
+	
+	// Getting a 'context'
+	var ctx = canvas.getContext('2d');
+	
+	// (Helper function)
+	function radiansFromDegrees(degrees) {
+		return Math.PI / 180 * degrees;
+	}
+	
+	
+	// Working with paths
+	// ------------------------------
+	// .beginPath()							// Creates a new path, the previous path is finished can't be modified anymore
+	// .moveTo(x, y)						// Moves the pen to the starting point, without drawing on the canvas
+	// Draw lines and shapes
+	// .closePath()							// Draws a finishing line back to the starting point (optional). Doesn't actually mean that the path is finished, you need to call beginPath() again for that.
+	// Define stroke and fill styles
+	// Add stroke and/or fill
+	
+	
+	// Drawing lines
+	// ------------------------------
+	// .lineTo(x, y)						// Moves the pen, drawing on the canvas
+	ctx.beginPath();
+	ctx.moveTo(10, 10);
+	ctx.lineTo(70, 70);
+	ctx.lineTo(70, 10);
+	ctx.closePath();
+	
+	
+	// Setting basic fill and stroke styles
+	// ------------------------------
+	// .fillStyle
+	// .strokeStyle
+	// .fill()
+	// .fill(fillRule)						// See "Fill Rules" section
+	// .fill(path2D)						// See "Path2D" section
+	// .fill(path2D, fillRule)
+	// .stroke()
+	// .stroke(path2D)						// See "Path2D" section
+	ctx.fillStyle = 'rgba(0,160,200,1)';	// Set fill styles
+	ctx.strokeStyle = 'rgba(0,0,200,1)';	// Set stroke styles
+	ctx.lineWidth = 4;						// Set stroke width
+	ctx.fill();								// Adds a fill to the path, automatically calls .closePath() if it hasn't been called yet
+	ctx.stroke();							// Adds a stroke to the path
+	
+	
+	// Drawing rectangles
+	// ------------------------------
+	// .rect(x, y, width, height)			// Shortcut for moveTo(), lineTo() x 3 and closePath()
+	// .fillRect(x, y, width, height)		// Shortcut for rect() and fill()
+	// .strokeRect(x, y, width, height)		// Shortcut for rect() and stroke()
+	// .clearRect(x, y, width, height)		// Deletes the content within the given space
+	ctx.beginPath();
+	ctx.rect(80, 10, 60, 60);
+	ctx.stroke();
+	
+	ctx.fillRect(150, 10, 60, 60);
+	ctx.strokeRect(220, 10, 60, 60);
+	ctx.clearRect(180, 30, 60, 20);
+	
+	
+	// Drawing arcs
+	// ------------------------------
+	// .ellipse(centerX, centerY, radiusX, radiusY, rotationAngle, startAngle, endAngle, anticlockwise)
+	// .arc(centerX, centerY, radius, startingAngle, endingAngle, anticlockwise)	// Connects the current point to the beginning of the new arc, use 'move' or begin a new path to avoid this
+	// .arcTo(control1X, control1Y, control2X, control2Y, radius)					// Draws a line from the current point to the line between control points, adding a curve with the given radius
+	ctx.beginPath();
+	ctx.ellipse(320, 40, 30, 15, radiansFromDegrees(15), radiansFromDegrees(45), radiansFromDegrees(315));
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.arc(390, 40, 30, radiansFromDegrees(45), radiansFromDegrees(315), false);
+	ctx.lineTo(390, 40);
+	ctx.arc(390, 40, 30, radiansFromDegrees(20), radiansFromDegrees(340), true);
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(430, 10);
+	ctx.arcTo(430, 70, 490, 70, 30);
+	ctx.stroke();
+	
+	
+	// Drawing bézier curves
+	// ------------------------------
+	// .quadraticCurveTo(controlX, controlY, x, y)									// Draws a curved line to 'x, y' using a single control point
+	// .bezierCurveTo(control1X, control1Y, control2X, control2Y, x, y)				// Draws a curved line to 'x, y' using two control points
+	ctx.beginPath();
+	ctx.moveTo(50, 100);
+	ctx.quadraticCurveTo(50, 90, 30, 90);
+	ctx.quadraticCurveTo(10, 90, 10, 110);
+	ctx.quadraticCurveTo(10, 140, 50, 140);
+	ctx.quadraticCurveTo(90, 140, 90, 110);
+	ctx.quadraticCurveTo(90, 90, 70, 90);
+	ctx.quadraticCurveTo(50, 90, 50, 100);
+	ctx.stroke();
+	
+	var origin = {x: 140, y: 100};
+	var topLeft = {x: origin.x-20, y: origin.y-15};
+	var left = {x: origin.x-40, y: origin.y+10};
+	var bottom = {x: origin.x, y: origin.y+50};
+	var right = {x: origin.x+40, y: origin.y+10};
+	var topRight = {x: origin.x+20, y: origin.y-15};
+	ctx.beginPath();
+	ctx.moveTo(origin.x, origin.y);
+	ctx.bezierCurveTo(origin.x,			origin.y-10,	topLeft.x+10,	topLeft.y,		topLeft.x,	topLeft.y);
+	ctx.bezierCurveTo(topLeft.x-15,		topLeft.y,		left.x,			left.y-10,		left.x,		left.y);
+	ctx.bezierCurveTo(left.x,			left.y+20,		bottom.x,		bottom.y-5,		bottom.x,	bottom.y);
+	ctx.bezierCurveTo(bottom.x,			bottom.y-5,		right.x,		right.y+20,		right.x,	right.y);
+	ctx.bezierCurveTo(right.x,			right.y-10,		topRight.x+15,	topRight.y,		topRight.x,	topRight.y);
+	ctx.bezierCurveTo(topRight.x-10,	topRight.y,		origin.x,		origin.y-10,	origin.x,	origin.y);
+	ctx.stroke();
+	
+	
+	// Path2D
+	// ------------------------------
+	// Check browser support for Path2D in general, and for the 'addPath' method in particular
+	// http://caniuse.com/#feat=path2d
+	if(typeof Path2D == 'function') {
+		
+		
+		// Initializers
+		// ------------------------------
+		// new Path2D()								// Create empty Path2D() objects and add paths directly to them, pass them to the fill() and stroke() methods to style only those elements
+		var rectangle = new Path2D();
+		var circle = new Path2D();
+		rectangle.rect(235, 105, 30, 30);
+		circle.arc(250, 120, 30, 0, radiansFromDegrees(360));
+		ctx.stroke(circle);
+		ctx.fill(rectangle);
+		
+		// new Path2D(path)
+		// new Path2D(path, fillRule)
+		var newRectangle = new Path2D(rectangle);
+		ctx.strokeStyle = 'red';
+		ctx.lineWidth = 2;
+		ctx.stroke(newRectangle);
+		
+		// new Path2D(svgD)
+		var svgPath = new Path2D('M290 90 h60 v60 h-60 Z');
+		ctx.stroke(svgPath);
+		
+		
+		// Adding Paths
+		// ------------------------------
+		// path2D.addPath(path2D)					// Adds another path to the existing one
+		// Path2D.addPath(path2D, transformMatrix)	// Adds a path, applying a matrix transformation to it before adding
+		if(typeof new Path2D().addPath == 'function') {
+			var rectangle2 = new Path2D();
+			var circle2 = new Path2D();
+			rectangle2.rect(375, 105, 30, 30);
+			circle2.arc(390, 120, 30, 0, radiansFromDegrees(360));
+			circle2.addPath(rectangle2);
+			ctx.stroke(circle2);
+		}
+	}
+	
+	
+	// FILLS AND STROKES
+	// ------------------------------
+	// .fillStyle									// Defines the color to be used when painting fills, you pass a CSS color, a gradient or a pattern
+	// .strokeStyle									// Defines the color to be used when painting strokes, you pass a CSS color, a gradient or a pattern
+	// .globalAlpha									// Defines a global opacity for both fills and strokes, applied on top of the individually defined alpha channel for each
+	ctx.fillStyle = 'orange';
+	ctx.fillStyle = '#FFA500';
+	ctx.fillStyle = 'rgb(255, 165, 0)';
+	ctx.fillStyle = 'rgba(255, 165, 0, 1)';
+	ctx.strokeStyle = 'black';
+	ctx.globalAlpha = 0.5;
+	ctx.fillRect(10, 180, 60, 60);
+	ctx.strokeRect(40, 210, 60, 60);
+	ctx.globalAlpha = 1;
+	
+	
+	// STROKE STYLES
+	// ------------------------------
+	// .lineWidth = (integer)						// Sets the width of strokes
+	// .lineCap = butt* | round | cap				// Type of ending for single strokes
+	// .lineJoin = round | bevel | miter*			// Type of joints between two angled strokes
+	// .miterLimit = value							// Size limit for 'miter' joints
+	for(var i=0; i<6; i++) {
+		ctx.lineWidth = i+1;
+		ctx.beginPath();
+		ctx.moveTo(150 + 10*i, 180);
+		ctx.lineTo(150 + 10*i, 240);
+		ctx.stroke();
+	}
+	
+	var lineCap = ['butt', 'round', 'square'];
+	ctx.lineWidth = 6;
+	for(var i=0; i<lineCap.length*2; i++) {
+		ctx.lineCap = lineCap[i%3];
+		ctx.beginPath();
+		ctx.moveTo(220 + 10*i, 180);
+		ctx.lineTo(220 + 10*i, 240);
+		ctx.stroke();
+	}
+	
+	var lineJoin = ['round', 'bevel', 'miter'];
+	for (var i = 0; i<lineJoin.length; i++) {
+		ctx.lineJoin = lineJoin[i];
+		ctx.beginPath();
+		ctx.moveTo(290, 180 + i * 20);
+		ctx.lineTo(305, 210 + i * 20);
+		ctx.lineTo(320, 180 + i * 20);
+		ctx.lineTo(335, 210 + i * 20);
+		ctx.lineTo(350, 180 + i * 20);
+		ctx.stroke();
+	}
+	
+	
+	// LINE DASHES
+	// ------------------------------
+	// .setLineDash(segments)						// 'segments' is an array with integers setting the length of each alternating stroke and gap
+	// .getLineDash()								// Returns the current setting for lineDashes
+	// .lineDashOffset								// The offset at which the dashes will begin
+	ctx.lineWidth = 2;
+	ctx.lineDashOffset = 10;
+	ctx.setLineDash([8, 12, 16]);
+	console.log( ctx.getLineDash() );
+	ctx.strokeRect(360, 180, 90, 90);
+	
+	
+	// IMAGES
+	// ------------------------------
+	// .drawImage(image, x, y)															// Place image on a given location
+	// .drawImage(image, x, y, width, height)											// Place image on a given location and resize it
+	// .drawImage(image, cropX, cropY, cropWidth, cropHeight, x, y, width, height)		// Crop image, place it on a given location, and resize it
+	// .msImageSmoothingEnabled = true* | false											// Enable or disable image smoothing
+	// .imageSmoothingEnabled = true* | false
+	// .msImageSmoothingQuality = "low"* | "medium" | "high"
+	// .imageSmoothingQuality = "low"* | "medium" | "high"
+	
+	// You can pass the following elements as an 'image' input:
+	// - CSS image value
+	// - HTML image element
+	// - SVG image element
+	// - HTML video element
+	// - HTML canvas element
+	// - Image bitmap
+	// - Offscreen canvas
+	
+	var testImage = new Image();
+	testImage.addEventListener('load', function() {
+		// callback after image has actually finished loading
+	}, false);
+	testImage.src = 'mdn-logo.png';
+	ctx.drawImage(testImage, 10, 280);
+	ctx.drawImage(testImage, 150, 280, 60, 68);
+	ctx.drawImage(testImage, 30, 30, 68, 86, 220, 280, 60, 68);
+	
+	
+	// GRADIENTS
+	// ------------------------------
+	// .createLinearGradient(x1, y1, x2, y2)			// Creates a 'gradient' object, the values passed for both points are absolute
+	// .createRadialGradient(x1, y1, r1, x2, y2, r2)	// Creates a 'gradient' object, values represent the absolute position and radius of two (generally concentric) circles
+	// gradient.addColorStop(position, color)			// Adds a color stop to a given gradient
+	var linearGradient = ctx.createLinearGradient(290, 280, 350, 340);
+	linearGradient.addColorStop(0, 'green');
+	linearGradient.addColorStop(1, 'yellow');
+	ctx.fillStyle = linearGradient;
+	ctx.fillRect(290, 280, 60, 60);
+	
+	var radialGradient = ctx.createRadialGradient(360, 280, 0, 360, 280, 30);
+	radialGradient.addColorStop(0, 'green');
+	radialGradient.addColorStop(1, 'yellow');
+	ctx.fillStyle = radialGradient;
+	ctx.fillRect(360, 280, 60, 60);
+	
+	
+	// PATTERNS
+	// ------------------------------
+	// .createPattern(image, type)						// Creates a 'pattern' object
+														// Possible values for 'image': See 'Images' section
+														// Possible values for 'type': repeat | repeat-x | repeat-y | no-repeat
+	// pattern.setTransform(DOMMatrix)
+	var patternImage = new Image();
+	patternImage.addEventListener('load', function() {
+		// callback after image has actually finished loading
+	}, false);
+	patternImage.src = 'mdn-logo.png';
+	var pattern = ctx.createPattern(testImage, 'repeat');
+	ctx.fillStyle = pattern;
+	ctx.fillRect(430, 280, 200, 60);
+	
+	
+	// SHADOWS
+	// ------------------------------
+	// .shadowOffsetX
+	// .shadowOffsetY
+	// .shadowBlur
+	// .shadowColor
+	ctx.fillStyle = 'white';
+	ctx.shadowOffsetX = -2;
+	ctx.shadowOffsetY = 2;
+	ctx.shadowBlur = 8;
+	ctx.shadowColor = 'blue';
+	ctx.fillRect(150, 350, 200, 60);
+	ctx.shadowColor = 'transparent';
+	
+	
+	// FILL RULES
+	// ------------------------------
+	// .fill(fill-rule)									// You can pass an argument to the 'fill()' function to determine how to handle nested shapes
+	// nonzero											// Default setting, fills all the space covered by the shapes
+	// evenodd											// Alternate nested shapes
+	ctx.beginPath();
+	ctx.moveTo(360, 350);
+	ctx.lineTo(420, 350);
+	ctx.lineTo(420, 410);
+	ctx.lineTo(360, 410);
+	ctx.lineTo(360, 360);
+	ctx.lineTo(410, 360);
+	ctx.lineTo(410, 400);
+	ctx.closePath();
+	ctx.fillStyle = 'orange';
+	ctx.fill('evenodd');
+	
+	
+	// DRAWING TEXT
+	// ------------------------------
+	// .font											// Font settings, at least font size and family. Defaults to '10px sans-serif'
+	// .textAlign										// start* | end | left | right | center
+	// .textBaseline									// top | hanging | middle | alphabetic* | ideographic | bottom
+	// .direction										// ltr | rtl | inherit*
+	// .fillText(text, x, y, maxWidth)					// Creates a block of text at 'x, y' position, 'maxWidth' is optional, if you pass that value the text might get compressed to fit within that size
+	// .strokeText(text, x, y, maxWidth)				//
+	// .measureText()									// Returns a 'TextMetrics' object
+	ctx.strokeStyle = 'black';
+	ctx.lineWidth = 2;
+	ctx.setLineDash([]);
+	ctx.font = "24px Roboto, Helvetica, sans-serif";
+	ctx.fillText('lorem ipsum', 10, 460);
+	ctx.strokeText('lorem ipsum', 10, 490);
+	console.log( ctx.measureText('lorem ipsum') );
+	
+	
+	// COMPOSITING AND BLENDING MODES
+	// ------------------------------
+	// .globalCompositeOperation = type:
+	// KEEPS BOTH:
+	//		source-over*		// draws new shapes on top of the existing ones
+	//		destination-over	// draws new shapes behind existing ones
+	// CROPS:
+	//		source-in			// draws the new shape where both overlap, everything else is deleted
+	//		destination-in		// keeps the old shape where both overlap, everything else is deleted							// Simplified: New shapes act as 'clipping masks'
+	//		source-out			// draws the new shape where it doesn't overlap with the old one, everything else is deleted
+	//		destination-out		// keeps the old shape where it doesn't overlap with the new one, everything else is deleted	// Simplified: New shapes act as 'eraser'
+	//		source-atop			// adds the new shape only where it overlaps with the old one									// Simplified: New shapes 'paint' the old ones
+	//		destination-atop	// adds the new shape behind the old one, deletes the old shape everywhere except where it overlaps with the new one
+	//		copy				// only the new shape is shown, the old one is deleted											// Simplified: Deletes everything and adds new shape
+	//		xor					// both shapes are drawn where they don't overlap, where they overlap becomes transparent		// Simplified: 'Difference'
+	// BLENDS:
+	//		lighter				// blend mode: colours are added where both shapes overlap
+	//		multiply			// blend mode: colours are multiplied where both shapes overlap
+	//		screen				// blend mode: opposite of multiply
+	//		overlay				// blend mode: combination of multiply and screen
+	//		darken				// blend mode: keeps the darkest pixels of both shapes
+	//		lighten				// blend mode: keeps the lightest pixels of both shapes
+	//		color-dodge			// blend mode: divides the bottom layer by the inverted top layer
+	//		color-burn			// blend mode: divides the inverted bottom layer by the top layer, then inverts the result
+	//		hard-light			// blend mode: like 'overlay', but with top and bottom layers swapped
+	//		soft-light			// blend mode: softer version of 'hard-light', pure black or white do not result in pure black or white
+	//		difference			// blend mode: substracts bottom layer from top layer, or the other way to always get a positive result
+	//		exclusion			// blend mode: like 'difference' but with lower contrast
+	//		hue					// blend mode: keeps luma and chroma of bottom layer, adopts hue of top layer
+	//		saturation			// blend mode: keeps luma and hue of bottom layer, adopts chroma of top layer
+	//		color				// blend mode: keeps luma of bottom layer, adopts hue and chroma of top layer
+	//		luminosity			// blend mode: keeps hue and chroma of bottom layer, adopts luma of top layer
+	var blendModes = ['lighter', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'];
+	var columns = Math.ceil( blendModes.length / 2 );
+	for(var i in blendModes) {
+		ctx.globalCompositeOperation = blendModes[i];
+		var column = columns - i%columns - 1;
+		var row = Math.floor( i/blendModes.length*2 );
+		ctx.fillRect(60+column*30, row*60, 20, 20);
+	}
+	ctx.globalCompositeOperation = 'source-over';
+	
+	
+	// CLIPPING
+	// ------------------------------
+	// .clip([fillRule])
+	// .clip(path2D, [fillRule])
+	// .resetClip()
+	
+	// Not well supported yet, I think???
+	
+	
+	// DETECTING POINTS IN PATHS
+	// ------------------------------
+	// .isPointInPath(x, y, [fillRule])
+	// .isPointInPath(path2D, x, y, [fillRule])
+	// .isPointInStroke(x, y, [fillRule])
+	// .isPointInStroke(path2D, x, y, [fillRule])
+	ctx.rect(10, 10, 60, 60);
+	console.log('Point in path: '+ctx.isPointInPath(20, 20));
+	console.log('Point in stroke: '+ctx.isPointInStroke(20, 20));
+	
+	
+	// DRAWING STATES
+	// ------------------------------
+	// .save()							// Saves the current drawing state (stored in a stack)
+	// .restore()						// Restores and removes the last drawing state from the stack
+	// 
+	// Each drawing state consists of:
+	// TRANSFORMATIONS:
+	//		translate
+	//		rotate
+	//		scale
+	// CLIPPING REGION
+	// GLOBAL ATTRIBUTES:
+	//		strokeStyle
+	//		fillStyle
+	//		globalAlpha
+	//		lineWidth
+	//		lineCap
+	//		lineJoin
+	//		miterLimit
+	//		lineDashOffset
+	//		shadowOffsetX
+	//		shadowOffsetY
+	//		shadowBlur
+	//		shadowColor
+	//		filter
+	//		globalCompositeOperation
+	//		font
+	//		textAlign
+	//		textBaseline
+	//		direction
+	//		imageSmoothingEnabled
+	//		imageSmoothingQuality
+	
+	
+	// TRANSFORMS
+	// ------------------------------
+	// Transformations are applied to the context element, modifying the origin point itself.
+	// Only new shapes you draw will reflect the transform settings, any existing shapes will be left untouched.
+	
+	// .translate(x, y)												// Moves the origin point
+	// .rotate(radians)												// Rotates the origin point
+	// .scale(x, y)													// Scales the origin point
+	// .transform(scaleX, skewX, skewY, scaleY, moveX, moveY)		// Applies a transform matrix, it's added on top of the existing transform settings
+	// .getTransform()												// Returns the current transform settings as a DOMMatrix object
+	// .resetTransform()											// Restores the origin point to its default values (1, 0, 0, 1, 0, 0)
+	// .setTransform(scaleX, skewX, skewY, scaleY, moveX, moveY)	// Resets the origin point, and then applies the defined transform matrix
+	// .setTransform(DOMMatrix)										// Resets the origin point, then matches the passed transform matrix
+	ctx.save();
+	ctx.translate(150, 440);
+	ctx.rotate(radiansFromDegrees(45));
+	ctx.scale(1.5, 1);
+	ctx.beginPath();
+	ctx.fillRect(0, 0, 50, 50);
+	ctx.restore();
+	
+	
+	// ANIMATIONS
+	// ------------------------------
+	
+	// STEPS:
+	// 1. Clear the canvas (or the section to be updated)
+	// 2. Save the canvas state (if necessary)
+	// 3. Add the required transforms if necessary
+	// 4. Draw the new shapes
+	// 5. Restore the canvas state (if necessary)
+	
+	// CONTROLLING AN ANIMATION:
+	// window.setInterval(callback, delay)
+	//		Can be used when you need a specific frame rate, and there's no user interaction
+	// window.setTimeout(callback, delay)
+	//		Can be used when you need a specific frame rate, and there's user interaction coupled with event listeners
+	// window.requestAnimationFrame(callback(timestamp)) -> animationFrameID
+	//		Preferred option
+	//		Runs the callback when the system is ready to paint the frame, resulting in smoother animations
+	//		Defaults to 60 frames per second but automatically gets lower depending on the system and when the page becomes a background tab
+	//		If you need an animation to last for a specific amount of time, you can check the timestamp in milliseconds passed to the callback function
+	// window.cancelAnimationFrame(animationFrameID)
+	
+	ctx.fillStyle = '#090';
+	var currentAngle = 0;
+	var currentAnimationFrame;
+	var rotateRectangle = function(timestamp){
+		ctx.save();
+		ctx.translate(220, 400);
+		ctx.rotate(radiansFromDegrees(currentAngle));
+		ctx.beginPath();
+		ctx.fillRect(0, 0, 50, 50);
+		ctx.fill();
+		ctx.restore();
+		currentAngle++;
+		currentAnimationFrame = requestAnimationFrame(rotateRectangle);
+		if(currentAngle >= 360) {
+			cancelAnimationFrame(currentAnimationFrame);
+			console.log('Animation ended at: '+timestamp);
+		}
+	}
+	currentAnimationFrame = requestAnimationFrame(rotateRectangle);
+	
+	
+	// PIXEL MANIPULATION
+	// ------------------------------
+	// .getImageData(left, top, width, height)		// Returns an ImageData object with information about the pixels contained within the specified frame
+	// .createImageData(width, height)				// Creates a new ImageData object with the provided size, all pixels are set to transparent black
+	// .createImageData(imageDataObject)			// Creates a new ImageData object with the same size as the passed object, all pixels are set to transparent black
+	// .putImageData(imageDataObject, x, y)			// Inserts an image into the canvas, at the specified position
+	// .putImageData(imageDataObject, x, y, cropX, cropY, cropWidth, cropHeight)
+	// ImageData									// The ImageData object contains the following properties:
+	//		width
+	//		height
+	//		data									// A flat array with the rgba values for each pixel on the image (4 array items for each pixel)
+	var imageFragment = ctx.getImageData(0, 0, 50, 150);
+	for(var i=0; i<imageFragment.data.length; i++) {
+		if(i%4 == 3) {
+			imageFragment.data[i] *= 0.75;
+			continue;
+		}
+		imageFragment.data[i] = 255 - imageFragment.data[i];
+	}
+	ctx.putImageData(imageFragment, 0, 0, 10, 10, 20, 20);
+	
+	
+	// SAVING DATA
+	// ------------------------------
+	// canvas.toDataURL(mimetype?, quality?)				// Creates a dataURI object, you can use it as the src of an <img>, or add it to a link with a 'download' attribute to save to disc
+	//		mimetype: image/png* | image/jepg | image/webp
+	//		quality: 0–1									// Used only when exporting as jpeg or webp
+	// canvas.toBlob(callback, mimetype?, quality?)			// Creates a blob object
+	//		callback										// Gets passed the blob data
+	//		mimetype: image/png* | image/jepg | image/webp
+	//		quality: 0–1
+	var downloadButton = document.getElementById('downloadButton');
+	var dataURI = canvas.toDataURL();
+	var blobImage = canvas.toBlob(function(data){
+		console.log(data);
+	})
+	downloadButton.href = dataURI;
+	downloadButton.download = 'canvas-test.png';
+	
+	
+	// ACCESSIBILITY
+	// ------------------------------
+	// In general avoid canvas elements in accessible sites if you can, if you do need then you can use the following techniques:
+	// FALLBACK CONTENT: Simply add regular semantic content inside the <canvas> element for browsers and screen readers that can't read canvas
+	// ARIA ROLES: Add aria attributes to the canvas element indicating what kind of content it represents
+	// HIT REGIONS: Custom hit regions for easier event triggering and semantics. Not yet supported on most browsers
+	// FOCUS RINGS: Adds focus indicators to focusable elements, you can also scroll the canvas to show the currently selected element. Not yet supported on most browsers
+	
+	
+	// PERFORMANCE TIPS
+	// ------------------------------
+	// Pre-render similar primitives or repeating object on an off-screen canvas
+	// Avoid floating-point values when calling drawImage()
+	// Don't scale images when calling drawImage(), cache the sizes you need on an offscreen canvas and extract them from there instead
+	// Use multiple layered canvases for complex scenes, keep the elements that change often on one layer, and add the more static content to separate layers
+	// For large background images, consider adding them as css backgrounds instead of drawing them to the canvas all the time
+	// If possible use CSS transforms instead of canvas transforms, and try to always scale up instead of down
+	// If the canvas doesn't need to be transparent, add the 'moz-opaque' attribute
+	
+	// Batch canvas calls together (for example, draw a poly-line instead of multiple separate lines)
+	// Avoid unnecessary canvas state changes
+	// Render screen differences only, not the whole canvas
+	// Avoid the shadowBlur property whenever possible
+	// Avoid text rendering whenever possible
+	// Be careful with heavy physics libraries
+	
+	
+	// NOT SUPPORTED YET
+	// ------------------------------
+	// new OffscreenCanvas(width, height);
+	// canvas.transferControlToOffscreen();
+	// .addHitRegion()
+	// .clearHitRegions()
+	// .removeHitRegion()
+	// .drawFocusIfNeeded()
+	// .scrollPathIntoView()
+	// .filter
+	
+	
+}
+
+
+</script>
+</body>
+</html>
